@@ -1,3 +1,6 @@
+.idea
+.nbproject
+vagrant/.vagrant
 
 ###> symfony/framework-bundle ###
 /.env
