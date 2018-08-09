@@ -1,6 +1,7 @@
 .idea
 .nbproject
 vagrant/.vagrant
+vagrant/*.log
 
 ###> symfony/framework-bundle ###
 /.env
