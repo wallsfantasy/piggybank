@@ -8,12 +8,12 @@ VIRTUAL_BOX_NAME = "piggybank"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = VAGRANT_BOX
-  config.vm.hostname = VIRTUAL_BOX_NAME
-
   config.vm.box_check_update = true
-
+  config.vm.hostname = VIRTUAL_BOX_NAME
   config.vm.network :private_network, ip: "192.168.254.10"
-  config.vm.synced_folder "..", "/var/www/piggybank", type: "nfs"
+  config.hostsupdater.aliases = ["root.piggybank", "app.piggybank"]
+
+  config.vm.synced_folder ".", "/var/www/piggybank", type: "nfs"
 
   # ensure box name
   config.vm.define VIRTUAL_BOX_NAME do |t|
@@ -41,15 +41,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     apt-get install -y php-mysql php-xdebug php-xml
   SHELL
 
-  # copy files required to provision software as recommended by https://www.vagrantup.com/docs/provisioning/file.html
-  config.vm.provision :file, source: "files", destination: "/tmp/provision"
+  # copy files required to provision software
+  # (as recommended by https://www.vagrantup.com/docs/provisioning/file.html)
+  config.vm.provision :file, source: "vagrant/files", destination: "/tmp/provision"
+
+  # provision php
+  config.vm.provision :shell, inline: <<-SHELL
+    mv /tmp/provision/php/xdebug.ini /etc/php/7.2/mods-available/xdebug.ini
+  SHELL
 
   # provision apache
   config.vm.provision :shell, inline: <<-SHELL
     mv /tmp/provision/www/index.php /var/www
-    mv /tmp/provision/apache2/001-dev.conf /etc/apache2/sites-available
+    mv /tmp/provision/apache2/001-root.piggybank.conf /etc/apache2/sites-available
+    mv /tmp/provision/apache2/002-app.piggybank.conf /etc/apache2/sites-available
     a2dissite 000-default.conf
-    a2ensite 001-dev.conf
+    a2ensite 001-root.piggybank.conf 002-app.piggybank.conf
     rm -rf /tmp/provision
     systemctl reload apache2.service
   SHELL
