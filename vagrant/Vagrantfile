@@ -1,47 +1,56 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
+VAGRANTFILE_API_VERSION = "2"
+VAGRANT_BOX = "ubuntu/bionic64"
+VAGRANT_BOX_MEMORY = 1024
+VIRTUAL_BOX_NAME = "piggybank"
 
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = VAGRANT_BOX
+  config.vm.hostname = VIRTUAL_BOX_NAME
 
-  config.vm.define "dev" do |dev|
-    dev.vm.box_check_update = true
-    dev.vm.network "private_network", ip: "192.168.254.10"
-    dev.vm.synced_folder "..", "/var/www/piggybank", type: "nfs"
+  config.vm.box_check_update = true
 
-    dev.vm.hostname = "vboxdev"
+  config.vm.network :private_network, ip: "192.168.254.10"
+  config.vm.synced_folder "..", "/var/www/piggybank", type: "nfs"
 
-    dev.vm.provider "virtualbox" do |vb|
-      vb.linked_clone = true
-      vb.memory = "1024"
-      vb.cpus = "2"
-      vb.name = "php.ubuntu-18.04"
-    end
-
-    dev.vm.provision "shell", inline: <<-SHELL
-      export DEBIAN_FRONTEND=noninteractive
-      apt-get update
-      apt-get -y upgrade
-      apt-get install -y apache2
-      a2enmod rewrite
-      sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
-      sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
-      apt-get -y install mysql-server
-      apt-get install -y php7.2
-      apt-get install -y php-mysql php-xdebug php-xml
-    SHELL
-
-    dev.vm.provision "file", source: "files", destination: "/tmp/provision"
-
-    dev.vm.provision "shell", inline: <<-SHELL
-      mv /tmp/provision/www/index.php /var/www
-      mv /tmp/provision/apache2/001-dev.conf /etc/apache2/sites-available
-      a2dissite 000-default.conf
-      a2ensite 001-dev.conf
-      rm -rf /tmp/provision
-      systemctl reload apache2.service
-    SHELL
+  # ensure box name
+  config.vm.define VIRTUAL_BOX_NAME do |t|
   end
-end
 
+  # configure virtual box
+  config.vm.provider :virtualbox do |vb|
+    vb.name = VIRTUAL_BOX_NAME
+    vb.linked_clone = true
+    vb.memory = "1024"
+    vb.cpus = "2"
+  end
+
+  # provision vm os
+  config.vm.provision :shell, inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get -y upgrade
+    apt-get install -y apache2
+    a2enmod rewrite
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+    apt-get -y install mysql-server
+    apt-get install -y php7.2
+    apt-get install -y php-mysql php-xdebug php-xml
+  SHELL
+
+  # copy files required to provision software as recommended by https://www.vagrantup.com/docs/provisioning/file.html
+  config.vm.provision :file, source: "files", destination: "/tmp/provision"
+
+  # provision apache
+  config.vm.provision :shell, inline: <<-SHELL
+    mv /tmp/provision/www/index.php /var/www
+    mv /tmp/provision/apache2/001-dev.conf /etc/apache2/sites-available
+    a2dissite 000-default.conf
+    a2ensite 001-dev.conf
+    rm -rf /tmp/provision
+    systemctl reload apache2.service
+  SHELL
+end
