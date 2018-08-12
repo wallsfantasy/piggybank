@@ -57,7 +57,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     mv /tmp/provision/apache2/002-app.piggybank.conf /etc/apache2/sites-available
     a2dissite 000-default.conf
     a2ensite 001-root.piggybank.conf 002-app.piggybank.conf
-    rm -rf /tmp/provision
     systemctl reload apache2.service
   SHELL
+
+  # provision development tools
+  config.vm.provision :shell, path: "vagrant/shell/install-composer.sh"
+
+  # cleanup
+  config.vm.provision :shell, inline: "rm -rf /tmp/provision"
 end
