@@ -1,4 +1,7 @@
 {
+    "beberlei/assert": {
+        "version": "v2.9.6"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -92,6 +95,9 @@
     "ocramius/proxy-manager": {
         "version": "2.1.1"
     },
+    "paragonie/random_compat": {
+        "version": "v9.99.99"
+    },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
     },
@@ -100,6 +106,15 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
+    },
+    "prooph/common": {
+        "version": "v4.2.2"
+    },
+    "prooph/service-bus": {
+        "version": "v6.2.2"
+    },
+    "prooph/service-bus-symfony-bundle": {
+        "version": "v0.7.0"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -115,6 +130,9 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "ramsey/uuid": {
+        "version": "3.8.0"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
