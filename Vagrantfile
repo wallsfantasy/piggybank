@@ -37,8 +37,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
     sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
     apt-get -y install mysql-server
+    apt-get install unzip
     apt-get install -y php7.2
-    apt-get install -y php-mysql php-xdebug php-xml
+    apt-get install -y php-mbstring php-mysql php-xdebug php-xml php-zip
   SHELL
 
   # copy files required to provision software
