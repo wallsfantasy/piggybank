@@ -63,6 +63,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # provision development tools
   config.vm.provision :shell, path: "vagrant/shell/install-composer.sh"
+  config.vm.provision :shell, path: "vagrant/shell/mysql-allow-remote.sh"
 
   # cleanup
   config.vm.provision :shell, inline: "rm -rf /tmp/provision"
