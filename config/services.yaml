@@ -29,3 +29,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Controller\CommandController:
+        arguments:
+            - '@prooph_service_bus.user_command_bus'
+            - '@prooph_service_bus.message_factory'
+        tags:
+            - 'controller.service_arguments'
+
+    App\User\CommandHandler\RegisterUserHandler:
+      tags:
+      - name: 'prooph_service_bus.user_command_bus.route_target'
+        message: App\User\Command\RegisterUser
