@@ -10,7 +10,7 @@ use Ramsey\Uuid\UuidInterface;
 final class UserId implements ValueObject
 {
     /** @var UuidInterface */
-    private $uuid;
+    public $id;
 
     public static function generate(): self
     {
@@ -24,12 +24,12 @@ final class UserId implements ValueObject
 
     private function __construct(UuidInterface $uuid)
     {
-        $this->uuid = $uuid;
+        $this->id = $uuid;
     }
 
     public function sameValueAs(ValueObject $another): bool
     {
         /** @var self $another */
-        return self::class === \get_class($another) && $this->uuid->equals($another->uuid);
+        return self::class === \get_class($another) && $this->id->equals($another->id);
     }
 }

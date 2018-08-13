@@ -9,7 +9,7 @@ use Assert\Assert;
 final class UserName implements ValueObject
 {
     /** @var string */
-    private $name;
+    public $name;
 
     public static function create(string $name): self
     {
