@@ -34,7 +34,7 @@ class User implements Entity
         $self->name = $name;
         $self->email = $email;
 
-        $self->recordThat(UserRegistered::withData($id, $name, $email));
+        //$self->recordThat(UserRegistered::withData($id, $name, $email));
 
         return $self;
     }
