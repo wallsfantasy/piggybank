@@ -5,6 +5,7 @@
         "php": "^7.2.0",
         "ext-iconv": "*",
         "prooph/event-sourcing": "^5.0",
+        "prooph/event-store-bus-bridge": "^3.3",
         "prooph/event-store-symfony-bundle": "^0.5.0",
         "prooph/pdo-event-store": "^1.9",
         "prooph/service-bus-symfony-bundle": "^0.7.0",

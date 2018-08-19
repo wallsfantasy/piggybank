@@ -3,7 +3,6 @@
 namespace App\Tests\User\Model;
 
 use App\User\Model\User;
-use Assert\Assertion;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
@@ -16,8 +15,8 @@ class UserTest extends TestCase
 
         $user = User::register($userId, $userName, $userEmail);
 
-        $this->assertTrue(Assertion::uuid($user->id));
-        $this->assertTrue(Assertion::string($user->name));
-        $this->assertTrue(Assertion::email($user->email));
+        $this->assertAttributeSame($userId, 'id', $user);
+        $this->assertAttributeSame($userName, 'name', $user);
+        $this->assertAttributeSame($userEmail, 'email', $user);
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\User\Command;
 
 use Assert\Assert;
-use Assert\Assertion;
 use Prooph\Common\Messaging\Command;
 use Prooph\Common\Messaging\PayloadConstructable;
 use Prooph\Common\Messaging\PayloadTrait;
@@ -12,15 +11,6 @@ use Prooph\Common\Messaging\PayloadTrait;
 final class RegisterUser extends Command implements PayloadConstructable
 {
     use PayloadTrait;
-
-    public static function withData(string $id, string $name, string $email): self
-    {
-        return new self([
-            'id' => $id,
-            'name' => $name,
-            'email' => $email,
-        ]);
-    }
 
     protected function setPayload(array $payload): void
     {

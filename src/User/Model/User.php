@@ -5,36 +5,25 @@ namespace App\User\Model;
 
 use App\Infrastructure\DDD\Entity;
 use App\User\Event\UserRegistered;
-use Assert\Assertion;
-use Prooph\EventSourcing\Aggregate\EventProducerTrait;
 use Prooph\EventSourcing\AggregateChanged;
+use Prooph\EventSourcing\AggregateRoot;
 
-class User implements Entity
+class User extends AggregateRoot implements Entity
 {
-    use EventProducerTrait;
+    /** @var string */
+    private $id;
 
     /** @var string */
-    public $id;
+    private $name;
 
     /** @var string */
-    public $name;
-
-    /** @var string */
-    public $email;
+    private $email;
 
     public static function register(string $id, string $name, string $email): self
     {
         $self = new self();
 
-        Assertion::uuid($id);
-        Assertion::string($name);
-        Assertion::email($email);
-
-        $self->id = $id;
-        $self->name = $name;
-        $self->email = $email;
-
-        //$self->recordThat(UserRegistered::withData($id, $name, $email));
+        $self->recordThat(UserRegistered::withData($id, $name, $email));
 
         return $self;
     }
@@ -63,5 +52,14 @@ class User implements Entity
         }
 
         $this->{$handler}($e);
+    }
+
+    private function whenUserRegistered(UserRegistered $event): void
+    {
+        $payload = $event->payload();
+
+        $this->id = $event->aggregateId();
+        $this->name = $payload['name'];
+        $this->email = $payload['email'];
     }
 }

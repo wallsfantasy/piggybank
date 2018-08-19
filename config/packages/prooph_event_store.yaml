@@ -1,0 +1,34 @@
+prooph_event_store:
+    stores:
+        user_store:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore
+            repositories:
+                user_event_store:
+                    repository_class: App\User\EventStore\UserEventStore
+                    aggregate_type: App\User\Model\User
+                    aggregate_translator: prooph_event_sourcing.aggregate_translator
+                    one_stream_per_aggregate: false
+                    stream_name: 'user_stream'
+
+    projection_managers:
+        user_projection_manager:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore # event store
+            connection: '@doctrine.pdo.connection'
+            projections:
+                user_read:
+                    read_model: App\User\Projection\UserReadModelRepo
+                    projection: App\User\Projection\UserProjection
+
+services:
+    Prooph\EventStore\Pdo\MySqlEventStore:
+        arguments: ['@prooph_event_store.message_factory', '@doctrine.pdo.connection', '@prooph_event_store.single_stream_strategy']
+
+    doctrine.pdo.connection:
+        class: PDO
+        factory: ['@database_connection', getWrappedConnection]
+
+    prooph_event_store.single_stream_strategy:
+        class: Prooph\EventStore\Pdo\PersistenceStrategy\MySqlSingleStreamStrategy
+
+    prooph_event_sourcing.aggregate_translator:
+        class: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator

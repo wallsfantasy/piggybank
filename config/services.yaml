@@ -30,14 +30,39 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    # Command controller
     App\Controller\CommandController:
         arguments:
             - '@prooph_service_bus.user_command_bus'
             - '@prooph_service_bus.message_factory'
-        tags:
-            - 'controller.service_arguments'
+        tags: ['controller.service_arguments']
 
+    # Event Controller (testing purpose)
+    App\Controller\EventController:
+        arguments:
+            - '@prooph_service_bus.user_event_bus'
+            - '@prooph_service_bus.message_factory'
+        tags: ['controller.service_arguments']
+
+    # Event Store Bridge
+    prooph_event_store_bus_bridge.user_event_publisher:
+        class: Prooph\EventStoreBusBridge\EventPublisher
+        arguments: ['@prooph_service_bus.user_event_bus']
+        public: true
+        tags:
+        - { name: 'prooph_event_store.user_store.plugin' }
+
+    # Handler
     App\User\CommandHandler\RegisterUserHandler:
-      tags:
-      - name: 'prooph_service_bus.user_command_bus.route_target'
-        message: App\User\Command\RegisterUser
+        arguments: ['@user_event_store']
+        tags:
+            - { name: 'prooph_service_bus.user_command_bus.route_target', message: App\User\Command\RegisterUser }
+
+    App\User\EventHandler\UserRegisteredHandler:
+        tags:
+            - { name: 'prooph_service_bus.user_event_bus.route_target', message: App\User\Event\UserRegistered }
+
+    # Projection
+    user.projection.user_read_repository:
+        class: 'App\User\Projection\UserReadModelRepo'
+        arguments: ['@doctrine.dbal.default_connection']

@@ -7,3 +7,9 @@ command::register-user:
   defaults:
     _controller: App\Controller\CommandController:postAction
     command_class: App\User\Command\RegisterUser
+
+event::user-registered:
+  path: /api/events/user-registered
+  defaults:
+    _controller: App\Controller\EventController:postAction
+    event_class: App\User\Event\UserRegistered

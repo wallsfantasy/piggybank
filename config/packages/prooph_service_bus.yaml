@@ -1,3 +1,6 @@
 prooph_service_bus:
     command_buses:
         user_command_bus: ~
+
+    event_buses:
+        user_event_bus: ~
