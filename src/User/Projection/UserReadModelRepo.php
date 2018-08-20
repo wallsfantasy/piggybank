@@ -8,7 +8,7 @@ use Prooph\EventStore\Projection\AbstractReadModel;
 
 class UserReadModelRepo extends AbstractReadModel
 {
-    private const TABLE = 'read_user';
+    private const TABLE = 'users';
 
     /** @var Connection */
     private $connection;
@@ -40,7 +40,7 @@ EOT;
     {
         $tableName = self::TABLE;
 
-        $sql = "SHOW TABLES LIKE '$tableName';";
+        $sql = "SHOW TABLES LIKE '${tableName}';";
 
         $statement = $this->connection->prepare($sql);
         $statement->execute();

@@ -66,3 +66,4 @@ services:
     user.projection.user_read_repository:
         class: 'App\User\Projection\UserReadModelRepo'
         arguments: ['@doctrine.dbal.default_connection']
+        public: true
