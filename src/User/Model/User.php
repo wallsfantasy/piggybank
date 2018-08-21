@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace App\User\Model;
 
-use App\Infrastructure\DDD\Entity;
 use App\User\Event\UserRegistered;
 use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 
-class User extends AggregateRoot implements Entity
+class User extends AggregateRoot
 {
     /** @var string */
     private $id;
@@ -26,12 +25,6 @@ class User extends AggregateRoot implements Entity
         $self->recordThat(UserRegistered::withData($id, $name, $email));
 
         return $self;
-    }
-
-    public function sameIdentityAs(Entity $another): bool
-    {
-        /** @var self $another */
-        return self::class === \get_class($another) && $this->id === $another->id;
     }
 
     protected function aggregateId(): string
