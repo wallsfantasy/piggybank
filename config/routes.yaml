@@ -2,11 +2,17 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
-command::register-user:
-  path: /api/commands/register-user
+command:user:register:
+  path: /api/commands/user/register
   defaults:
     _controller: App\Controller\CommandController:postAction
     command_class: App\User\Command\RegisterUser
+
+command:user:change-email:
+  path: /api/commands/user/change-email
+  defaults:
+    _controller: App\Controller\CommandController:postAction
+    command_class: App\User\Command\ChangeEmail
 
 event::user-registered:
   path: /api/events/user-registered

@@ -84,6 +84,16 @@ EOT;
         return $readModel;
     }
 
+    protected function changeEmail(string $id, string $email): void
+    {
+        $stmt = $this->connection->prepare(sprintf("UPDATE %s SET email = :email WHERE id = :id", self::TABLE));
+
+        $stmt->bindValue('id', $id);
+        $stmt->bindValue('email', $email);
+
+        $stmt->execute();
+    }
+
     /**
      * @return UserReadModel[]
      */

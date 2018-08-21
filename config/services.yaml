@@ -58,9 +58,18 @@ services:
         tags:
             - { name: 'prooph_service_bus.user_command_bus.route_target', message: App\User\Command\RegisterUser }
 
+    App\User\CommandHandler\ChangeEmailHandler:
+        arguments: ['@user_event_store']
+        tags:
+            - { name: 'prooph_service_bus.user_command_bus.route_target', message: App\User\Command\ChangeEmail }
+
     App\User\EventHandler\UserRegisteredHandler:
         tags:
             - { name: 'prooph_service_bus.user_event_bus.route_target', message: App\User\Event\UserRegistered }
+
+    App\User\EventHandler\EmailChangedHandler:
+      tags:
+      - { name: 'prooph_service_bus.user_event_bus.route_target', message: App\User\Event\EmailChanged }
 
     # Projection
     user.projection.user_read_repository:

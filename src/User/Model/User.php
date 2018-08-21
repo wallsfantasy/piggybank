@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\User\Model;
 
+use App\User\Event\EmailChanged;
 use App\User\Event\UserRegistered;
 use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
@@ -27,9 +28,11 @@ class User extends AggregateRoot
         return $self;
     }
 
-    protected function aggregateId(): string
+    public function changeEmail(string $email): void
     {
-        return $this->id;
+        $this->email = $email;
+
+        $this->recordThat(EmailChanged::withData($this->id, $email));
     }
 
     protected function apply(AggregateChanged $e): void
@@ -47,12 +50,25 @@ class User extends AggregateRoot
         $this->{$handler}($e);
     }
 
+    protected function aggregateId(): string
+    {
+        return $this->id;
+    }
+
     private function whenUserRegistered(UserRegistered $event): void
     {
         $payload = $event->payload();
 
         $this->id = $event->aggregateId();
         $this->name = $payload['name'];
+        $this->email = $payload['email'];
+    }
+
+    private function whenEmailChanged(EmailChanged $event): void
+    {
+        $payload = $event->payload();
+
+        $this->id = $event->aggregateId();
         $this->email = $payload['email'];
     }
 }
